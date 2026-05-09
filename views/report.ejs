@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIR Report</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e3c72">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #f4f7f6; margin: 0; min-height: 100vh; }
+        
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 16px 24px; color: white; display: flex;
+            justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .header h2 { margin: 0; font-size: 20px; font-weight: 600; }
+        .btn {
+            padding: 10px 16px; font-size: 14px; font-weight: 500;
+            background: rgba(255,255,255,0.2); color: white; border: none;
+            border-radius: 8px; cursor: pointer; text-decoration: none; backdrop-filter: blur(5px);
+            transition: background 0.3s ease;
+        }
+        .btn:hover { background: rgba(255,255,255,0.3); }
+        .btn-primary { background: #2a5298; }
+        .btn-primary:hover { background: #1e3c72; }
+
+        .container { padding: 24px; max-width: 1200px; margin: 0 auto; }
+        
+        /* FILTER CARD */
+        .filter-card {
+            background: white; padding: 20px; border-radius: 12px;
+            margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;
+        }
+        .filter-group { flex: 1; min-width: 200px; }
+        .filter-group label { display: block; margin-bottom: 8px; font-size: 14px; color: #555; font-weight: 500; }
+        .filter-card select {
+            width: 100%; padding: 12px; border: 1px solid #ddd;
+            border-radius: 8px; font-size: 15px; background: #fdfdfd;
+        }
+        .filter-card button { height: 45px; padding: 0 24px; align-self: flex-end; }
+        
+        /* DATA GRID / CARDS */
+        .records-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .record-card {
+            background: white; border-radius: 12px; padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;
+            border-top: 4px solid #1e3c72; transition: transform 0.2s ease;
+        }
+        .record-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+        .record-card.heinous { border-top-color: #e74c3c; }
+        .record-card.non-heinous { border-top-color: #f39c12; }
+        
+        .record-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;}
+        .fir-no { font-size: 18px; font-weight: 600; color: #333; }
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+        .badge.heinous { background: #fdeaea; color: #e74c3c; }
+        .badge.non-heinous { background: #fef5e6; color: #f39c12; }
+        
+        .record-detail { margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 14px; }
+        .detail-label { color: #777; }
+        .detail-value { font-weight: 500; color: #333; }
+        
+        .status-container { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ddd; display: flex; justify-content: space-between; align-items: center; }
+        .status-text { font-size: 13px; font-weight: 600; }
+        .status-expired { color: #e74c3c; }
+        .status-valid { color: #2ecc71; }
+        .status-filed { color: #3498db; }
+        
+        /* TOGGLE SWITCH */
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #2ecc71; }
+        input:checked + .slider:before { transform: translateX(20px); }
+        .toggle-form { display: flex; align-items: center; gap: 10px; margin: 0; }
+        .toggle-label { font-size: 13px; font-weight: 600; color: #555; }
+
+        .no-data { grid-column: 1 / -1; text-align: center; padding: 40px; color: #777; background: white; border-radius: 12px; font-weight: 500; }
+
+        @media (max-width: 600px) {
+            .filter-card { flex-direction: column; align-items: stretch; }
+            .filter-group { min-width: 100%; }
+            .filter-card button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>🚓 Reports</h2>
+    <a href="/admin" class="btn">⬅ Dashboard</a>
+</div>
+
+<div class="container">
+    <div class="filter-card">
+        <form method="GET" action="/admin/report" style="display:flex; width:100%; gap:15px; flex-wrap:wrap; align-items:flex-end;">
+            <div class="filter-group">
+                <label>Police Station</label>
+                <select name="station">
+                    <option value="">All Stations</option>
+                    <% if (stations && stations.length) { %>
+                        <% stations.forEach(s => { %>
+                            <option value="<%= s %>" <%= station === s ? 'selected' : '' %>><%= s %></option>
+                        <% }) %>
+                    <% } %>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Crime Type</label>
+                <select name="reportType">
+                    <option value="">All Types</option>
+                    <option value="Heinous" <%= reportType === 'Heinous' ? 'selected' : '' %>>Heinous</option>
+                    <option value="Non-Heinous" <%= reportType === 'Non-Heinous' ? 'selected' : '' %>>Non-Heinous</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+    </div>
+
+    <div class="records-grid">
+        <% if (data && data.length > 0) { %>
+            <% data.forEach(fir => { 
+                const today = new Date();
+                const firDate = new Date(fir.fir_date);
+                const diffTime = today.getTime() - firDate.getTime();
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                const limitDays = fir.crime_type === "Heinous" ? 90 : 60;
+                const isHeinous = fir.crime_type === "Heinous";
+            %>
+            <div class="record-card <%= isHeinous ? 'heinous' : 'non-heinous' %>">
+                <div class="record-header">
+                    <div class="fir-no">#<%= fir.fir_number %></div>
+                    <div class="badge <%= isHeinous ? 'heinous' : 'non-heinous' %>"><%= fir.crime_type %></div>
+                </div>
+                
+                <div class="record-detail">
+                    <span class="detail-label">Station</span>
+                    <span class="detail-value"><%= fir.police_station %></span>
+                </div>
+                <div class="record-detail">
+                    <span class="detail-label">Date</span>
+                    <span class="detail-value"><%= firDate.toLocaleDateString() %></span>
+                </div>
+                
+                <div class="status-container">
+                    <div class="status-info">
+                        <% if (fir.chargesheet_filed === true || fir.chargesheet_filed === 1) { %>
+                            <span class="status-text status-filed">✓ Chargesheet Filed</span>
+                        <% } else if(diffDays > limitDays) { %>
+                            <span class="status-text status-expired">⚠ Overdue (<%= diffDays %>d / <%= limitDays %>d)</span>
+                        <% } else { %>
+                            <span class="status-text status-valid">⏱ <%= diffDays %>d / <%= limitDays %>d</span>
+                        <% } %>
+                    </div>
+                    
+                    <form method="POST" action="/update-chargesheet/<%= fir.id %>" class="toggle-form">
+                        <span class="toggle-label">Filed</span>
+                        <label class="switch">
+                            <input type="checkbox" name="chargesheet" onchange="this.form.submit()" <%= fir.chargesheet_filed ? 'checked' : '' %>>
+                            <span class="slider"></span>
+                        </label>
+                    </form>
+                </div>
+            </div>
+            <% }) %>
+        <% } else { %>
+            <div class="no-data">No FIR records found matching your filters.</div>
+        <% } %>
+    </div>
+</div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js');
+    });
+  }
+</script>
+</body>
+</html>
