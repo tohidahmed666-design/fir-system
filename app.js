@@ -14,6 +14,11 @@ app.set('views', path.join(__dirname, 'views'));
 // Serve static files (manifest, service-worker, images, etc.)
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Legacy redirect for cached PWA versions looking for /public/images
+app.get('/public/images/:file', (req, res) => {
+    res.redirect('/images/' + req.params.file);
+});
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(session({
