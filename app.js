@@ -241,15 +241,12 @@ app.get('/admin/report', isAuth, async (req, res) => {
 
         }
 
-        // ================= SEND DATA =================
-        if (station && station !== "") {
-            // Natural sort for FIR numbers (e.g., 20/2024 before 2/2024)
-            data.sort((a, b) => {
-                const aVal = a.fir_number || "";
-                const bVal = b.fir_number || "";
-                return bVal.localeCompare(aVal, undefined, { numeric: true, sensitivity: 'base' });
-            });
-        }
+        // Natural sort for FIR numbers (e.g., 20/2024 before 2/2024) in descending order
+        data.sort((a, b) => {
+            const aVal = a.fir_number || "";
+            const bVal = b.fir_number || "";
+            return bVal.localeCompare(aVal, undefined, { numeric: true, sensitivity: 'base' });
+        });
 
         res.render('report', {
             data,
@@ -289,6 +286,7 @@ app.post('/update-chargesheet/:id', isAuth, async (req, res) => {
     }
 
 });
+
 
 // ================= LOGOUT =================
 app.get('/logout', (req, res) => {

@@ -223,8 +223,11 @@
                 const station = (details && details[0]) ? details[0].innerText.trim() : 'N/A';
                 const date = (details && details[1]) ? details[1].innerText.trim() : 'N/A';
                 const type = badgeEl ? badgeEl.innerText.trim() : 'N/A';
-                const status = statusEl ? statusEl.innerText.trim() : 'N/A';
+                let status = statusEl ? statusEl.innerText.trim() : 'N/A';
                 
+                // Remove symbols (✓, ⚠, ⏱) for better PDF/Excel export compatibility
+                status = status.replace(/[✓⚠⏱]/g, '').trim();
+
                 rows.push([firNo, station, date, type, status]);
             } catch (err) {
                 console.warn("Skipping a record due to parsing error:", err);
