@@ -98,7 +98,14 @@
 
 <div class="header">
     <h2>🚓 Reports</h2>
-    <a href="/admin" class="btn">⬅ Dashboard</a>
+    <div style="display: flex; gap: 10px; position: relative;">
+        <button class="btn" id="exportBtn" style="background: rgba(255,255,255,0.3);">📥 Export ▾</button>
+        <div id="exportMenu" style="display: none; position: absolute; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px; top: 100%; right: 0; z-index: 1000; overflow: hidden; margin-top: 5px; min-width: 150px;">
+            <a href="javascript:void(0)" onclick="exportToPDF()" style="display: block; padding: 12px 16px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; font-size: 14px; font-weight: 500;">📄 PDF Document</a>
+            <a href="javascript:void(0)" onclick="exportToExcel()" style="display: block; padding: 12px 16px; color: #333; text-decoration: none; font-size: 14px; font-weight: 500;">Excel Sheet</a>
+        </div>
+        <a href="/admin" class="btn">⬅ Dashboard</a>
+    </div>
 </div>
 
 <div class="container">
@@ -179,12 +186,81 @@
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js');
+    // Toggle Export Menu
+    const exportBtn = document.getElementById('exportBtn');
+    const exportMenu = document.getElementById('exportMenu');
+    
+    exportBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        exportMenu.style.display = exportMenu.style.display === 'none' ? 'block' : 'none';
     });
-  }
+
+    document.addEventListener('click', () => {
+        exportMenu.style.display = 'none';
+    });
+
+    // Helper to get current table data
+    function getReportData() {
+        const cards = document.querySelectorAll('.record-card');
+        const rows = [];
+        cards.forEach(card => {
+            const firNo = card.querySelector('.fir-no').innerText.replace('#', '');
+            const station = card.querySelector('.record-detail:nth-of-type(1) .detail-value').innerText;
+            const date = card.querySelector('.record-detail:nth-of-type(2) .detail-value').innerText;
+            const type = card.querySelector('.badge').innerText;
+            const status = card.querySelector('.status-text').innerText;
+            rows.push([firNo, station, date, type, status]);
+        });
+        return rows;
+    }
+
+    // Export to PDF
+    function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        doc.setFontSize(18);
+        doc.text("FIR System Report", 14, 20);
+        doc.setFontSize(10);
+        doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
+        
+        const headers = [["FIR No", "Police Station", "Date", "Type", "Status"]];
+        const data = getReportData();
+        
+        doc.autoTable({
+            head: headers,
+            body: data,
+            startY: 35,
+            theme: 'grid',
+            headStyles: { fillColor: [30, 60, 114] }
+        });
+        
+        doc.save(`FIR_Report_${new Date().getTime()}.pdf`);
+    }
+
+    // Export to Excel
+    function exportToExcel() {
+        const data = getReportData();
+        const headers = ["FIR No", "Police Station", "Date", "Type", "Status"];
+        const worksheetData = [headers, ...data];
+        
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+        XLSX.utils.book_append_sheet(wb, ws, "FIR Report");
+        
+        XLSX.writeFile(wb, `FIR_Report_${new Date().getTime()}.xlsx`);
+    }
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js');
+        });
+    }
 </script>
 </body>
 </html>
