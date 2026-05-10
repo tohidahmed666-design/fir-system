@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,20 +22,8 @@
             flex-direction: column;
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: #333;
+            overflow-x: hidden;
         }
-
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .logo-left { height: 40px; }
-        .logo-right { height: 60px; }
 
         .container {
             flex: 1;
@@ -42,141 +31,231 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            gap: 40px;
+        }
+
+        .side-logo {
+            height: 120px;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .side-logo.left {
+            animation-delay: 0s;
+        }
+
+        .side-logo.right {
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         .login-box {
             width: 100%;
             max-width: 400px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(15px);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.4);
-            transition: transform 0.3s ease;
-        }
-
-        .login-box:hover {
-            transform: translateY(-5px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            position: relative;
+            z-index: 5;
         }
 
         h2 {
             text-align: center;
             color: #1e3c72;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             font-weight: 600;
+            font-size: 24px;
         }
 
         .form-group {
             margin-bottom: 20px;
         }
 
-        select, input {
+        select,
+        input {
             width: 100%;
             padding: 14px;
             font-size: 16px;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 8px;
-            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            background: #fff;
             transition: all 0.3s ease;
         }
 
-        select:focus, input:focus {
+        select:focus,
+        input:focus {
             outline: none;
-            border-color: #2a5298;
-            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.2);
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 4px rgba(30, 60, 114, 0.1);
         }
 
         button {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             font-size: 16px;
             font-weight: 600;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(30, 60, 114, 0.4);
+            margin-top: 10px;
         }
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.6);
+            box-shadow: 0 8px 25px rgba(30, 60, 114, 0.5);
         }
 
         .error {
             color: #d32f2f;
             background: #ffebee;
-            padding: 10px;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 8px;
             text-align: center;
             margin-bottom: 20px;
             font-size: 14px;
+            border: 1px solid #ffcdd2;
         }
-        
+
+        .footer {
+            padding: 15px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .dev-logo {
+            height: 35px;
+            opacity: 0.9;
+            filter: brightness(0) invert(1);
+            /* Makes it white to match theme */
+            transition: opacity 0.3s;
+        }
+
+        .dev-logo:hover {
+            opacity: 1;
+        }
+
         /* Background decorative elements */
         .bg-circle {
             position: absolute;
             border-radius: 50%;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.05);
             z-index: 0;
+            pointer-events: none;
         }
-        .circle1 { width: 300px; height: 300px; top: -50px; left: -100px; }
-        .circle2 { width: 400px; height: 400px; bottom: -100px; right: -100px; }
 
+        .circle1 {
+            width: 500px;
+            height: 500px;
+            top: -150px;
+            left: -150px;
+        }
+
+        .circle2 {
+            width: 600px;
+            height: 600px;
+            bottom: -200px;
+            right: -200px;
+        }
+
+        @media (max-width: 768px) {
+            .side-logo {
+                display: none;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .login-box {
+                padding: 30px;
+            }
+        }
     </style>
 </head>
 
 <body>
-<div class="bg-circle circle1"></div>
-<div class="bg-circle circle2"></div>
+    <div class="bg-circle circle1"></div>
+    <div class="bg-circle circle2"></div>
 
-<!-- HEADER -->
-<div class="header" style="z-index: 2;">
-    <img src="/public/images/G-NTTF.png" class="logo-left" alt="" onerror="this.style.display='none'">
-    <img src="/public/images/Police.png" class="logo-right" alt="" onerror="this.style.display='none'">
-</div>
+    <div class="container" style="z-index: 2;">
+        <!-- Left Logo -->
+        <img src="/images/Police.png" class="side-logo left" alt="Police Logo">
 
-<!-- LOGIN BOX -->
-<div class="container" style="z-index: 2;">
-    <div class="login-box">
-        <h2>Welcome Back</h2>
+        <!-- Login Box -->
+        <div class="login-box">
+            <h2>FIR Management System</h2>
 
-        <% if (error) { %>
-            <div class="error"><%= error %></div>
-        <% } %>
+            <% if (error) { %>
+                <div class="error">
+                    <%= error %>
+                </div>
+                <% } %>
 
-        <form method="POST" action="/login">
-            <div class="form-group">
-                <select name="username" required>
-                    <option value="">Select User</option>
-                    <% if (typeof users !== "undefined" && users && users.length > 0) { %>
-                        <% users.forEach(u => { %>
-                            <option value="<%= u.username %>"><%= u.username %></option>
-                        <% }) %>
-                    <% } else { %>
-                        <option value="DCRB DPO Gadag">DCRB DPO Gadag</option>
-                    <% } %>
-                </select>
-            </div>
+                    <form method="POST" action="/login">
+                        <div class="form-group">
+                            <select name="username" required>
+                                <option value="">Select User</option>
+                                <% if (typeof users !=="undefined" && users && users.length> 0) { %>
+                                    <% users.forEach(u=> { %>
+                                        <option value="<%= u.username %>">
+                                            <%= u.username %>
+                                        </option>
+                                        <% }) %>
+                                            <% } else { %>
+                                                <option value="DCRB DPO Gadag">DCRB DPO Gadag</option>
+                                                <% } %>
+                            </select>
+                        </div>
 
-            <div class="form-group">
-                <input type="password" name="password" placeholder="Password" required>
-            </div>
+                        <div class="form-group">
+                            <input type="password" name="password" placeholder="Password" required>
+                        </div>
 
-            <button type="submit">Login Securely</button>
-        </form>
+                        <button type="submit">Login to Dashboard</button>
+                    </form>
+        </div>
+
+        <!-- Right Logo -->
+        <img src="/images/Police.png" class="side-logo right" alt="Police Logo">
     </div>
-</div>
 
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js');
-    });
-  }
-</script>
+    <footer class="footer">
+        <span>Developed by</span>
+        <img src="/images/G-NTTF.png" class="dev-logo" alt="NTTF Logo">
+    </footer>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js');
+            });
+        }
+    </script>
 </body>
+
 </html>
