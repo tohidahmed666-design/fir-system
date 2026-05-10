@@ -209,18 +209,35 @@
         const cards = document.querySelectorAll('.record-card');
         const rows = [];
         cards.forEach(card => {
-            const firNo = card.querySelector('.fir-no').innerText.replace('#', '');
-            const station = card.querySelector('.record-detail:nth-of-type(1) .detail-value').innerText;
-            const date = card.querySelector('.record-detail:nth-of-type(2) .detail-value').innerText;
-            const type = card.querySelector('.badge').innerText;
-            const status = card.querySelector('.status-text').innerText;
-            rows.push([firNo, station, date, type, status]);
+            try {
+                const firNoEl = card.querySelector('.fir-no');
+                const details = card.querySelectorAll('.record-detail .detail-value');
+                const badgeEl = card.querySelector('.badge');
+                const statusEl = card.querySelector('.status-text');
+
+                // Safety checks to prevent "innerText of null" errors
+                const firNo = firNoEl ? firNoEl.innerText.replace('#', '').trim() : 'N/A';
+                const station = (details && details[0]) ? details[0].innerText.trim() : 'N/A';
+                const date = (details && details[1]) ? details[1].innerText.trim() : 'N/A';
+                const type = badgeEl ? badgeEl.innerText.trim() : 'N/A';
+                const status = statusEl ? statusEl.innerText.trim() : 'N/A';
+                
+                rows.push([firNo, station, date, type, status]);
+            } catch (err) {
+                console.warn("Skipping a record due to parsing error:", err);
+            }
         });
         return rows;
     }
 
     // Export to PDF
     function exportToPDF() {
+        const data = getReportData();
+        if (data.length === 0) {
+            alert("No data available to export.");
+            return;
+        }
+
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
@@ -246,6 +263,10 @@
     // Export to Excel
     function exportToExcel() {
         const data = getReportData();
+        if (data.length === 0) {
+            alert("No data available to export.");
+            return;
+        }
         const headers = ["FIR No", "Police Station", "Date", "Type", "Status"];
         const worksheetData = [headers, ...data];
         
