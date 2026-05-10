@@ -183,17 +183,15 @@
         }
 
         @media (max-width: 768px) {
-            .side-logo {
-                display: none;
+            .container { 
+                flex-direction: column; 
+                padding: 30px 15px;
+                gap: 20px;
             }
-
-            .container {
-                padding: 15px;
+            .side-logo { 
+                height: 80px; 
             }
-
-            .login-box {
-                padding: 30px;
-            }
+            .login-box { padding: 30px; }
         }
     </style>
 </head>
@@ -203,8 +201,8 @@
     <div class="bg-circle circle2"></div>
 
     <div class="container" style="z-index: 2;">
-        <!-- Left Logo -->
-        <img src="/images/Police.png" class="side-logo left" alt="Police Logo">
+        <!-- Left Logo (Top on mobile) -->
+        <img src="/images/Police.png?v=1" class="side-logo left" alt="Police Logo">
 
         <!-- Login Box -->
         <div class="login-box">
@@ -240,13 +238,13 @@
                     </form>
         </div>
 
-        <!-- Right Logo -->
-        <img src="/images/Police.png" class="side-logo right" alt="Police Logo">
+        <!-- Right Logo (Bottom on mobile) -->
+        <img src="/images/Police.png?v=1" class="side-logo right" alt="Police Logo">
     </div>
 
     <footer class="footer">
         <span>Developed by</span>
-        <img src="/images/G-NTTF.png" class="dev-logo" alt="NTTF Logo">
+        <img src="/images/G-NTTF.png?v=1" class="dev-logo" alt="NTTF Logo">
     </footer>
 
     <script>
