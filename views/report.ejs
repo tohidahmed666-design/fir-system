@@ -250,7 +250,6 @@
         doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
         
         const headers = [["FIR No", "Police Station", "Date", "Type", "Status"]];
-        const data = getReportData();
         
         doc.autoTable({
             head: headers,
