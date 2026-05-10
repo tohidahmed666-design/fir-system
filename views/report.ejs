@@ -99,10 +99,10 @@
 <div class="header">
     <h2>🚓 Reports</h2>
     <div style="display: flex; gap: 10px; position: relative;">
-        <button class="btn" id="exportBtn" style="background: rgba(255,255,255,0.3);">📥 Export ▾</button>
-        <div id="exportMenu" style="display: none; position: absolute; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px; top: 100%; right: 0; z-index: 1000; overflow: hidden; margin-top: 5px; min-width: 150px;">
-            <a href="javascript:void(0)" onclick="exportToPDF()" style="display: block; padding: 12px 16px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; font-size: 14px; font-weight: 500;">📄 PDF Document</a>
-            <a href="javascript:void(0)" onclick="exportToExcel()" style="display: block; padding: 12px 16px; color: #333; text-decoration: none; font-size: 14px; font-weight: 500;">Excel Sheet</a>
+        <button class="btn" onclick="toggleExportMenu(event)" style="background: rgba(255,255,255,0.3); cursor: pointer;">📥 Export ▾</button>
+        <div id="exportMenu" style="display: none; position: absolute; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-radius: 8px; top: 100%; right: 0; z-index: 9999; overflow: hidden; margin-top: 8px; min-width: 160px; border: 1px solid #ddd;">
+            <button onclick="exportToPDF()" style="display: block; width: 100%; text-align: left; padding: 12px 16px; color: #333; background: none; border: none; border-bottom: 1px solid #eee; font-size: 14px; font-weight: 500; cursor: pointer;">📄 PDF Document</button>
+            <button onclick="exportToExcel()" style="display: block; width: 100%; text-align: left; padding: 12px 16px; color: #333; background: none; border: none; font-size: 14px; font-weight: 500; cursor: pointer;">Excel Sheet</button>
         </div>
         <a href="/admin" class="btn">⬅ Dashboard</a>
     </div>
@@ -192,16 +192,19 @@
 
 <script>
     // Toggle Export Menu
-    const exportBtn = document.getElementById('exportBtn');
-    const exportMenu = document.getElementById('exportMenu');
-    
-    exportBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        exportMenu.style.display = exportMenu.style.display === 'none' ? 'block' : 'none';
-    });
+    function toggleExportMenu(e) {
+        if (e) e.stopPropagation();
+        const menu = document.getElementById('exportMenu');
+        const isVisible = menu.style.display === 'block';
+        menu.style.display = isVisible ? 'none' : 'block';
+        console.log("Export menu toggled:", !isVisible);
+    }
 
-    document.addEventListener('click', () => {
-        exportMenu.style.display = 'none';
+    document.addEventListener('click', (e) => {
+        const menu = document.getElementById('exportMenu');
+        if (menu && menu.style.display === 'block') {
+            menu.style.display = 'none';
+        }
     });
 
     // Helper to get current table data
