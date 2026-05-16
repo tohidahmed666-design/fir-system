@@ -191,7 +191,7 @@
 <body>
 
     <div class="header">
-        <h2>📄FIR 60/90 Days Tracking System Dashboard</h2>
+        <h2>📄FIR 60/90 Days Tracking System</h2>
         <div class="top-actions">
             <a href="/admin/report" class="btn report-btn">📊 View Reports</a>
             <a href="/logout" class="btn logout-btn">Logout</a>
@@ -237,6 +237,11 @@
                             style="background: #f0f0f0;">
                     </div>
 
+                    <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" name="is_pocso_scst" id="isPocsoScst" style="width: auto; transform: scale(1.2);">
+                        <label for="isPocsoScst" style="margin: 0; font-weight: 600; color: #e74c3c;">POCSO / SCST Case (60 Days Heinous)</label>
+                    </div>
+
                     <div class="form-group">
                         <label>Crime Type</label>
                         <select name="crime_type" id="crimeType" required>
@@ -255,6 +260,18 @@
     <script>
         document.getElementById('date').addEventListener('change', function () {
             document.getElementById('year').value = this.value ? new Date(this.value).getFullYear() : "";
+        });
+
+        document.getElementById('isPocsoScst').addEventListener('change', function () {
+            const crimeTypeSelect = document.getElementById('crimeType');
+            if (this.checked) {
+                crimeTypeSelect.value = 'Heinous';
+                crimeTypeSelect.style.pointerEvents = 'none';
+                crimeTypeSelect.style.background = '#f0f0f0';
+            } else {
+                crimeTypeSelect.style.pointerEvents = 'auto';
+                crimeTypeSelect.style.background = '#fdfdfd';
+            }
         });
 
         if ('serviceWorker' in navigator) {

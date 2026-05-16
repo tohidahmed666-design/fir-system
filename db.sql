@@ -13,7 +13,9 @@ CREATE TABLE fir_records (
     crime_type VARCHAR(20),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     duration VARCHAR(100),
-    chargesheet_filed BOOLEAN DEFAULT false
+    chargesheet_filed BOOLEAN DEFAULT false,
+    reason_for_pending VARCHAR(25),
+    is_pocso_scst BOOLEAN DEFAULT false
 );
 
 -- ADMIN

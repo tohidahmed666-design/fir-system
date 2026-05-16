@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,332 +9,633 @@
     <meta name="theme-color" content="#1e3c72">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f4f7f6; margin: 0; min-height: 100vh; }
-        
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f4f7f6;
+            margin: 0;
+            min-height: 100vh;
+        }
+
         /* HEADER */
         .header {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            padding: 16px 24px; color: white; display: flex;
-            justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 16px 24px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        .header h2 { margin: 0; font-size: 20px; font-weight: 600; }
+
+        .header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
         .btn {
-            padding: 10px 16px; font-size: 14px; font-weight: 500;
-            background: rgba(255,255,255,0.2); color: white; border: none;
-            border-radius: 8px; cursor: pointer; text-decoration: none; backdrop-filter: blur(5px);
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            backdrop-filter: blur(5px);
             transition: background 0.3s ease;
         }
-        .btn:hover { background: rgba(255,255,255,0.3); }
-        .btn-primary { background: #2a5298; }
-        .btn-primary:hover { background: #1e3c72; }
-        .btn-danger { background: #e74c3c; }
-        .btn-danger:hover { background: #c0392b; }
 
-        .container { padding: 24px; max-width: 1200px; margin: 0 auto; }
-        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary {
+            background: #2a5298;
+        }
+
+        .btn-primary:hover {
+            background: #1e3c72;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .container {
+            padding: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         /* FILTER CARD */
         .filter-card {
-            background: white; padding: 20px; border-radius: 12px;
-            margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
         }
-        .filter-group { flex: 1; min-width: 200px; }
-        .filter-group label { display: block; margin-bottom: 8px; font-size: 14px; color: #555; font-weight: 500; }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+
         .filter-card select {
-            width: 100%; padding: 12px; border: 1px solid #ddd;
-            border-radius: 8px; font-size: 15px; background: #fdfdfd;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #fdfdfd;
         }
-        .filter-card button { height: 45px; padding: 0 24px; align-self: flex-end; }
-        
+
+        .filter-card button {
+            height: 45px;
+            padding: 0 24px;
+            align-self: flex-end;
+        }
+
         /* DATA GRID / CARDS */
         .records-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
         }
-        .record-card {
-            background: white; border-radius: 12px; padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;
-            border-top: 4px solid #1e3c72; transition: transform 0.2s ease;
-        }
-        .record-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
-        .record-card.heinous { border-top-color: #e74c3c; }
-        .record-card.non-heinous { border-top-color: #f39c12; }
-        
-        .record-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;}
-        .fir-no { font-size: 18px; font-weight: 600; color: #333; }
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
-        .badge.heinous { background: #fdeaea; color: #e74c3c; }
-        .badge.non-heinous { background: #fef5e6; color: #f39c12; }
-        
-        .record-detail { margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 14px; }
-        .detail-label { color: #777; }
-        .detail-value { font-weight: 500; color: #333; }
-        
-        .status-container { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ddd; display: flex; justify-content: space-between; align-items: center; }
-        .status-text { font-size: 13px; font-weight: 600; }
-        .status-expired { color: #e74c3c; }
-        .status-valid { color: #2ecc71; }
-        .status-filed { color: #3498db; }
-        
-        /* TOGGLE SWITCH */
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: #2ecc71; }
-        input:checked + .slider:before { transform: translateX(20px); }
-        .toggle-form { display: flex; align-items: center; gap: 10px; margin: 0; }
-        .toggle-label { font-size: 13px; font-weight: 600; color: #555; }
 
-        .no-data { grid-column: 1 / -1; text-align: center; padding: 40px; color: #777; background: white; border-radius: 12px; font-weight: 500; }
+        .record-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            border-top: 4px solid #1e3c72;
+            transition: transform 0.2s ease;
+        }
+
+        .record-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .record-card.heinous {
+            border-top-color: #e74c3c;
+        }
+
+        .record-card.non-heinous {
+            border-top-color: #f39c12;
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .fir-no {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge.heinous {
+            background: #fdeaea;
+            color: #e74c3c;
+        }
+
+        .badge.non-heinous {
+            background: #fef5e6;
+            color: #f39c12;
+        }
+
+        .record-detail {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .detail-label {
+            color: #777;
+        }
+
+        .detail-value {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .status-container {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-text {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-expired {
+            color: #e74c3c;
+        }
+
+        .status-valid {
+            color: #2ecc71;
+        }
+
+        .status-filed {
+            color: #3498db;
+        }
+
+        /* TOGGLE SWITCH */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #2ecc71;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(20px);
+        }
+
+        .toggle-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .toggle-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .no-data {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: #777;
+            background: white;
+            border-radius: 12px;
+            font-weight: 500;
+        }
 
         @media (max-width: 600px) {
-            .filter-card { flex-direction: column; align-items: stretch; }
-            .filter-group { min-width: 100%; }
-            .filter-card button { width: 100%; }
+            .filter-card {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                min-width: 100%;
+            }
+
+            .filter-card button {
+                width: 100%;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div class="header">
-    <h2>🚓 Reports</h2>
-    <div style="display: flex; gap: 10px; align-items: center; position: relative;">
-        <button class="btn" onclick="toggleExportMenu(event)" style="background: rgba(255,255,255,0.3); cursor: pointer;">📥 Export ▾</button>
-        <div id="exportMenu" style="display: none; position: absolute; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-radius: 8px; top: 100%; right: 0; z-index: 9999; overflow: hidden; margin-top: 8px; min-width: 160px; border: 1px solid #ddd;">
-            <button onclick="exportToPDF()" style="display: block; width: 100%; text-align: left; padding: 12px 16px; color: #333; background: none; border: none; border-bottom: 1px solid #eee; font-size: 14px; font-weight: 500; cursor: pointer;">📄 PDF Document</button>
-            <button onclick="exportToExcel()" style="display: block; width: 100%; text-align: left; padding: 12px 16px; color: #333; background: none; border: none; font-size: 14px; font-weight: 500; cursor: pointer;">Excel Sheet</button>
-        </div>
-        <% if (user.role === 'admin') { %>
-        <a href="/admin" class="btn">⬅ Dashboard</a>
-        <% } %>
-        <a href="/logout" class="btn btn-danger">Logout</a>
-    </div>
-</div>
-
-<div class="container">
-
-    <!-- Stats Bar -->
-    <div style="display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
-        <div style="background:white; border-radius:12px; padding:16px 24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); flex:1; min-width:160px; border-left:4px solid #1e3c72;">
-            <div style="font-size:12px; color:#777; font-weight:500; margin-bottom:4px;">TOTAL IN DATABASE</div>
-            <div style="font-size:28px; font-weight:700; color:#1e3c72;"><%= totalInDB %></div>
-        </div>
-        <div style="background:white; border-radius:12px; padding:16px 24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); flex:1; min-width:160px; border-left:4px solid #2ecc71;">
-            <div style="font-size:12px; color:#777; font-weight:500; margin-bottom:4px;">SHOWING NOW</div>
-            <div style="font-size:28px; font-weight:700; color:#2ecc71;"><%= data.length %></div>
-        </div>
-        <% if (reportType && reportType !== '') { %>
-        <div style="background:white; border-radius:12px; padding:16px 24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); flex:1; min-width:200px; border-left:4px solid #f39c12;">
-            <div style="font-size:12px; color:#777; font-weight:500; margin-bottom:4px;">ACTIVE FILTER</div>
-            <div style="font-size:16px; font-weight:700; color:#f39c12;">⚠ Overdue <%= reportType %> only</div>
-        </div>
-        <% } %>
-    </div>
-
-    <div class="filter-card">
-        <form method="GET" action="/admin/report" style="display:flex; width:100%; gap:15px; flex-wrap:wrap; align-items:flex-end;">
-            <div class="filter-group">
-                <label>Police Station</label>
-                <select name="station">
-                    <option value="">All Stations</option>
-                    <% if (stations && stations.length) { %>
-                        <% stations.forEach(s => { %>
-                            <option value="<%= s %>" <%= station === s ? 'selected' : '' %>><%= s %></option>
-                        <% }) %>
-                    <% } %>
-                </select>
+    <div class="header">
+        <h2>🚓 Reports</h2>
+        <div style="display: flex; gap: 10px; align-items: center; position: relative;">
+            <button class="btn" onclick="toggleExportMenu(event)"
+                style="background: rgba(255,255,255,0.3); cursor: pointer;">📥 Export ▾</button>
+            <div id="exportMenu"
+                style="display: none; position: absolute; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-radius: 8px; top: 100%; right: 0; z-index: 9999; overflow: hidden; margin-top: 8px; min-width: 160px; border: 1px solid #ddd;">
+                <button onclick="exportToPDF()"
+                    style="display: block; width: 100%; text-align: left; padding: 12px 16px; color: #333; background: none; border: none; border-bottom: 1px solid #eee; font-size: 14px; font-weight: 500; cursor: pointer;">📄
+                    PDF Document</button>
+                <button onclick="exportToExcel()"
+                    style="display: block; width: 100%; text-align: left; padding: 12px 16px; color: #333; background: none; border: none; font-size: 14px; font-weight: 500; cursor: pointer;">Excel
+                    Sheet</button>
             </div>
-            <div class="filter-group">
-                <label>Report Type</label>
-                <select name="reportType">
-                    <option value="">All Records (no filter)</option>
-                    <option value="Heinous" <%= reportType === 'Heinous' ? 'selected' : '' %>>⚠ Overdue Heinous (80+ days)</option>
-                    <option value="Non-Heinous" <%= reportType === 'Non-Heinous' ? 'selected' : '' %>>⚠ Overdue Non-Heinous (50+ days)</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Apply</button>
-            <a href="/admin/report" class="btn" style="background:#6c757d;">Reset</a>
-        </form>
+            <% if (user.role==='admin' ) { %>
+                <a href="/admin" class="btn">⬅ Dashboard</a>
+                <% } %>
+                    <a href="/logout" class="btn btn-danger">Logout</a>
+        </div>
     </div>
 
-    <!-- TABLE VIEW -->
-    <div style="background:white; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05); overflow:hidden;">
-        <% if (data && data.length > 0) { %>
-        <div style="overflow-x:auto;">
-        <table id="firTable" style="width:100%; border-collapse:collapse; font-size:14px;">
-            <thead>
-                <tr style="background:linear-gradient(135deg,#1e3c72,#2a5298); color:white;">
-                    <th style="padding:14px 16px; text-align:left; font-weight:600;">#</th>
-                    <th style="padding:14px 16px; text-align:left; font-weight:600;">FIR No</th>
-                    <th style="padding:14px 16px; text-align:left; font-weight:600;">Police Station</th>
-                    <th style="padding:14px 16px; text-align:left; font-weight:600;">Date</th>
-                    <th style="padding:14px 16px; text-align:left; font-weight:600;">Type</th>
-                    <th style="padding:14px 16px; text-align:left; font-weight:600;">Days</th>
-                    <th style="padding:14px 16px; text-align:center; font-weight:600;">Status</th>
-                    <% if (user.role === 'admin') { %>
-                    <th style="padding:14px 16px; text-align:center; font-weight:600;">Filed</th>
-                    <% } %>
-                </tr>
-            </thead>
-            <tbody>
-            <% let rowNum = 0; data.forEach(fir => {
-                rowNum++;
-                const today = new Date();
-                const firDate = new Date(fir.fir_date);
-                const diffDays = Math.floor((today - firDate) / (1000 * 60 * 60 * 24));
-                const limitDays = fir.crime_type === 'Heinous' ? 90 : 60;
-                const isHeinous = fir.crime_type === 'Heinous';
-                const isOverdue = !fir.chargesheet_filed && diffDays > limitDays;
-                const rowBg = rowNum % 2 === 0 ? '#f8f9fa' : 'white';
-            %>
-                <tr style="background:<%= rowBg %>; border-bottom:1px solid #eee; transition:background 0.2s;"
-                    onmouseover="this.style.background='#eef2ff'" onmouseout="this.style.background='<%= rowBg %>'">
-                    <td style="padding:12px 16px; color:#999;"><%= rowNum %></td>
-                    <td style="padding:12px 16px; font-weight:700; color:#1e3c72;"><%= fir.fir_number %></td>
-                    <td style="padding:12px 16px; color:#333;"><%= fir.police_station %></td>
-                    <td style="padding:12px 16px; color:#555;"><%= firDate.toLocaleDateString('en-IN') %></td>
-                    <td style="padding:12px 16px;">
-                        <span style="padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;
+    <div class="container">
+
+        <!-- Stats Bar -->
+        <div style="display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+            <div
+                style="background:white; border-radius:12px; padding:16px 24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); flex:1; min-width:160px; border-left:4px solid #1e3c72;">
+                <div style="font-size:12px; color:#777; font-weight:500; margin-bottom:4px;">TOTAL IN DATABASE</div>
+                <div style="font-size:28px; font-weight:700; color:#1e3c72;">
+                    <%= totalInDB %>
+                </div>
+            </div>
+            <div
+                style="background:white; border-radius:12px; padding:16px 24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); flex:1; min-width:160px; border-left:4px solid #2ecc71;">
+                <div style="font-size:12px; color:#777; font-weight:500; margin-bottom:4px;">SHOWING NOW</div>
+                <div style="font-size:28px; font-weight:700; color:#2ecc71;">
+                    <%= data.length %>
+                </div>
+            </div>
+            <% if (reportType && reportType !=='' ) { %>
+                <div
+                    style="background:white; border-radius:12px; padding:16px 24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); flex:1; min-width:200px; border-left:4px solid #f39c12;">
+                    <div style="font-size:12px; color:#777; font-weight:500; margin-bottom:4px;">ACTIVE FILTER</div>
+                    <div style="font-size:16px; font-weight:700; color:#f39c12;">⚠ Overdue <%= reportType %> only</div>
+                </div>
+                <% } %>
+        </div>
+
+        <div class="filter-card">
+            <form method="GET" action="/admin/report"
+                style="display:flex; width:100%; gap:15px; flex-wrap:wrap; align-items:flex-end;">
+                <div class="filter-group">
+                    <label>Police Station</label>
+                    <select name="station">
+                        <option value="">All Stations</option>
+                        <% if (stations && stations.length) { %>
+                            <% stations.forEach(s=> { %>
+                                <option value="<%= s %>" <%=station===s ? 'selected' : '' %>><%= s %>
+                                </option>
+                                <% }) %>
+                                    <% } %>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Report Type</label>
+                    <select name="reportType">
+                        <option value="">All Records (no filter)</option>
+                        <option value="Heinous" <%=reportType==='Heinous' ? 'selected' : '' %>>⚠ Overdue Heinous (80+
+                            days)</option>
+                        <option value="Non-Heinous" <%=reportType==='Non-Heinous' ? 'selected' : '' %>>⚠ Overdue
+                            Non-Heinous (50+ days)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select name="statusFilter">
+                        <option value="All Status" <%= (typeof statusFilter !== 'undefined' && statusFilter === 'All Status') ? 'selected' : '' %>>All Status (Pending & Overdue)</option>
+                        <option value="Pending" <%= (typeof statusFilter !== 'undefined' && statusFilter === 'Pending') ? 'selected' : '' %>>Pending</option>
+                        <option value="Overdue" <%= (typeof statusFilter !== 'undefined' && statusFilter === 'Overdue') ? 'selected' : '' %>>Overdue</option>
+                        <option value="" <%= (typeof statusFilter === 'undefined' || statusFilter === '') ? 'selected' : '' %>>Include Filed</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <a href="/admin/report" class="btn" style="background:#6c757d;">Reset</a>
+            </form>
+        </div>
+
+        <!-- TABLE VIEW -->
+        <div style="background:white; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05); overflow:hidden;">
+            <% if (data && data.length> 0) { %>
+                <div style="overflow-x:auto;">
+                    <table id="firTable" style="width:100%; border-collapse:collapse; font-size:14px;">
+                        <thead>
+                            <tr style="background:linear-gradient(135deg,#1e3c72,#2a5298); color:white;">
+                                <th style="padding:14px 16px; text-align:left; font-weight:600;">#</th>
+                                <th style="padding:14px 16px; text-align:left; font-weight:600;">FIR No</th>
+                                <th style="padding:14px 16px; text-align:left; font-weight:600;">Police Station</th>
+                                <th style="padding:14px 16px; text-align:left; font-weight:600;">Date</th>
+                                <th style="padding:14px 16px; text-align:left; font-weight:600;">Type</th>
+                                <th style="padding:14px 16px; text-align:left; font-weight:600;">Days</th>
+                                <th style="padding:14px 16px; text-align:left; font-weight:600;">Reason for Pending</th>
+                                <th style="padding:14px 16px; text-align:center; font-weight:600;">Status</th>
+                                <% if (user.role==='admin' ) { %>
+                                    <th style="padding:14px 16px; text-align:center; font-weight:600;">Charge Sheeted
+                                    </th>
+                                    <% } %>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% let rowNum=0; data.forEach(fir=> {
+                                rowNum++;
+                                const today = new Date();
+                                const firDate = new Date(fir.fir_date);
+                                const diffDays = Math.floor((today - firDate) / (1000 * 60 * 60 * 24));
+                                const limitDays = fir.is_pocso_scst ? 60 : (fir.crime_type === 'Heinous' ? 90 : 60);
+                                const isHeinous = fir.crime_type === 'Heinous';
+                                const isOverdue = !fir.chargesheet_filed && diffDays > limitDays;
+                                const rowBg = rowNum % 2 === 0 ? '#f8f9fa' : 'white';
+                                %>
+                                <tr style="background:<%= rowBg %>; border-bottom:1px solid #eee; transition:background 0.2s;"
+                                    onmouseover="this.style.background='#eef2ff'"
+                                    onmouseout="this.style.background='<%= rowBg %>'">
+                                    <td style="padding:12px 16px; color:#999;">
+                                        <%= rowNum %>
+                                    </td>
+                                    <td style="padding:12px 16px; font-weight:700; color:#1e3c72;">
+                                        <%= fir.fir_number %>
+                                    </td>
+                                    <td style="padding:12px 16px; color:#333;">
+                                        <%= fir.police_station %>
+                                    </td>
+                                    <td style="padding:12px 16px; color:#555;">
+                                        <%= firDate.toLocaleDateString('en-IN') %>
+                                    </td>
+                                    <td style="padding:12px 16px;">
+                                        <span style="padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;
                             background:<%= isHeinous ? '#fdeaea' : '#fef5e6' %>;
                             color:<%= isHeinous ? '#e74c3c' : '#d68910' %>;">
-                            <%= fir.crime_type %>
-                        </span>
-                    </td>
-                    <td style="padding:12px 16px; font-weight:600;
+                                            <%= fir.crime_type %>
+                                        </span>
+                                    </td>
+                                    <td style="padding:12px 16px; font-weight:600;
                         color:<%= fir.chargesheet_filed ? '#3498db' : (isOverdue ? '#e74c3c' : '#2ecc71') %>">
-                        <%= diffDays %>d / <%= limitDays %>d
-                    </td>
-                    <td style="padding:12px 16px; text-align:center;">
-                        <% if (fir.chargesheet_filed) { %>
-                            <span style="background:#d5f5e3; color:#1e8449; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;">✓ Filed</span>
-                        <% } else if (isOverdue) { %>
-                            <span style="background:#fdeaea; color:#e74c3c; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;">⚠ Overdue</span>
-                        <% } else { %>
-                            <span style="background:#eaf4fb; color:#2980b9; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;">⏱ Pending</span>
-                        <% } %>
-                    </td>
-                    <% if (user.role === 'admin') { %>
-                    <td style="padding:12px 16px; text-align:center;">
-                        <form method="POST" action="/update-chargesheet/<%= fir.id %>" style="margin:0;">
-                            <label class="switch">
-                                <input type="checkbox" name="chargesheet" onchange="this.form.submit()" <%= fir.chargesheet_filed ? 'checked' : '' %>>
-                                <span class="slider"></span>
-                            </label>
-                        </form>
-                    </td>
+                                        <%= diffDays %>d / <%= limitDays %>d
+                                    </td>
+                                    <td style="padding:12px 16px;">
+                                        <form method="POST" action="/update-reason/<%= fir.id %>" style="margin:0; display:flex; flex-direction:column; gap:5px; align-items:flex-start;">
+                                            <div style="display:flex; gap:5px;">
+                                                <% const predefinedReasons = ['Registered', 'Wound Certificate', 'FSL Report', 'PWD Map', 'Evidence Recording', 'Accused Arrest']; %>
+                                                <% const isOther = fir.reason_for_pending && !predefinedReasons.includes(fir.reason_for_pending); %>
+                                                <select name="reason_for_pending" onchange="toggleReasonInput(this)" style="padding:4px; border-radius:4px; font-size:12px; width:130px; border:1px solid #ccc;">
+                                                    <option value="">- Select -</option>
+                                                    <option value="Registered" <%= fir.reason_for_pending === 'Registered' ? 'selected' : '' %>>Registered</option>
+                                                    <option value="Wound Certificate" <%= fir.reason_for_pending === 'Wound Certificate' ? 'selected' : '' %>>Wound Certificate</option>
+                                                    <option value="FSL Report" <%= fir.reason_for_pending === 'FSL Report' ? 'selected' : '' %>>FSL Report</option>
+                                                    <option value="PWD Map" <%= fir.reason_for_pending === 'PWD Map' ? 'selected' : '' %>>PWD Map</option>
+                                                    <option value="Evidence Recording" <%= fir.reason_for_pending === 'Evidence Recording' ? 'selected' : '' %>>Evidence Recording</option>
+                                                    <option value="Accused Arrest" <%= fir.reason_for_pending === 'Accused Arrest' ? 'selected' : '' %>>Accused Arrest</option>
+                                                    <option value="Others" <%= isOther ? 'selected' : '' %>>Others</option>
+                                                </select>
+                                                <button type="submit" style="padding:4px 8px; font-size:12px; background:#1e3c72; color:white; border:none; border-radius:4px; cursor:pointer;">Save</button>
+                                            </div>
+                                            <input type="text" name="reason_for_pending_others" maxlength="25" placeholder="Specify reason..." style="padding:4px; border:1px solid #ccc; font-size:12px; width:130px; border-radius:4px; display:<%= isOther ? 'block' : 'none' %>;" value="<%= isOther ? fir.reason_for_pending : '' %>">
+                                        </form>
+                                    </td>
+                                    <td style="padding:12px 16px; text-align:center;">
+                                        <% if (fir.chargesheet_filed) { %>
+                                            <span
+                                                style="background:#d5f5e3; color:#1e8449; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;">✓
+                                                Filed</span>
+                                            <% } else if (isOverdue) { %>
+                                                <span
+                                                    style="background:#fdeaea; color:#e74c3c; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;">⚠
+                                                    Overdue</span>
+                                                <% } else { %>
+                                                    <span
+                                                        style="background:#eaf4fb; color:#2980b9; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;">⏱
+                                                        Pending</span>
+                                                    <% } %>
+                                    </td>
+                                    <% if (user.role==='admin' ) { %>
+                                        <td style="padding:12px 16px; text-align:center;">
+                                            <form method="POST" action="/update-chargesheet/<%= fir.id %>"
+                                                style="margin:0;">
+                                                <label class="switch">
+                                                    <input type="checkbox" name="chargesheet"
+                                                        onchange="this.form.submit()" <%=fir.chargesheet_filed
+                                                        ? 'checked' : '' %>>
+                                                    <span class="slider"></span>
+                                                </label>
+                                            </form>
+                                        </td>
+                                        <% } %>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } else { %>
+                    <div class="no-data">No FIR records found matching your filters.</div>
                     <% } %>
-                </tr>
-            <% }) %>
-            </tbody>
-        </table>
         </div>
-        <% } else { %>
-            <div class="no-data">No FIR records found matching your filters.</div>
-        <% } %>
     </div>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-<script>
-    // Toggle Export Menu
-    function toggleExportMenu(e) {
-        if (e) e.stopPropagation();
-        const menu = document.getElementById('exportMenu');
-        const isVisible = menu.style.display === 'block';
-        menu.style.display = isVisible ? 'none' : 'block';
-        console.log("Export menu toggled:", !isVisible);
-    }
-
-    document.addEventListener('click', (e) => {
-        const menu = document.getElementById('exportMenu');
-        if (menu && menu.style.display === 'block') {
-            menu.style.display = 'none';
+    <script>
+        // Toggle Export Menu
+        function toggleExportMenu(e) {
+            if (e) e.stopPropagation();
+            const menu = document.getElementById('exportMenu');
+            const isVisible = menu.style.display === 'block';
+            menu.style.display = isVisible ? 'none' : 'block';
+            console.log("Export menu toggled:", !isVisible);
         }
-    });
 
-    // Helper to get current table data
-    function getReportData() {
-        const rows = [];
-        const trs = document.querySelectorAll('#firTable tbody tr');
-        trs.forEach(tr => {
-            try {
-                const tds = tr.querySelectorAll('td');
-                if (tds.length >= 7) {
-                    const firNo = tds[1].innerText.replace('#', '').trim();
-                    const station = tds[2].innerText.trim();
-                    const date = tds[3].innerText.trim();
-                    const type = tds[4].innerText.trim();
-                    let status = tds[6].innerText.trim();
-                    
-                    // Remove symbols (✓, ⚠, ⏱) for better PDF/Excel export compatibility
-                    status = status.replace(/[✓⚠⏱]/g, '').trim();
-
-                    rows.push([firNo, station, date, type, status]);
-                }
-            } catch (err) {
-                console.warn("Skipping a record due to parsing error:", err);
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('exportMenu');
+            if (menu && menu.style.display === 'block') {
+                menu.style.display = 'none';
             }
         });
-        return rows;
-    }
 
-    // Export to PDF
-    function exportToPDF() {
-        const data = getReportData();
-        if (data.length === 0) {
-            alert("No data available to export.");
-            return;
+        function toggleReasonInput(selectEl) {
+            const form = selectEl.closest('form');
+            const inputEl = form.querySelector('input[type="text"]');
+            if (selectEl.value === 'Others') {
+                inputEl.style.display = 'block';
+                inputEl.required = true;
+            } else {
+                inputEl.style.display = 'none';
+                inputEl.required = false;
+            }
         }
 
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        doc.setFontSize(18);
-        doc.text("FIR System Report", 14, 20);
-        doc.setFontSize(10);
-        doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
-        
-        const headers = [["FIR No", "Police Station", "Date", "Type", "Status"]];
-        
-        doc.autoTable({
-            head: headers,
-            body: data,
-            startY: 35,
-            theme: 'grid',
-            headStyles: { fillColor: [30, 60, 114] }
-        });
-        
-        doc.save(`FIR_Report_${new Date().getTime()}.pdf`);
-    }
+        // Helper to get current table data
+        function getReportData() {
+            const rows = [];
+            const trs = document.querySelectorAll('#firTable tbody tr');
+            trs.forEach(tr => {
+                try {
+                    const tds = tr.querySelectorAll('td');
+                    if (tds.length >= 7) {
+                        const firNo = tds[1].innerText.replace('#', '').trim();
+                        const station = tds[2].innerText.trim();
+                        const date = tds[3].innerText.trim();
+                        const type = tds[4].innerText.trim();
+                        
+                        let reason = '';
+                        const reasonSelect = tds[6].querySelector('select');
+                        const reasonInput = tds[6].querySelector('input[type="text"]');
+                        if (reasonSelect) {
+                            reason = reasonSelect.value === 'Others' ? (reasonInput ? reasonInput.value : '') : reasonSelect.value;
+                        }
 
-    // Export to Excel
-    function exportToExcel() {
-        const data = getReportData();
-        if (data.length === 0) {
-            alert("No data available to export.");
-            return;
+                        let status = tds[7].innerText.trim();
+
+                        // Remove symbols (✓, ⚠, ⏱) for better PDF/Excel export compatibility
+                        status = status.replace(/[✓⚠⏱]/g, '').trim();
+
+                        rows.push([firNo, station, date, type, reason, status]);
+                    }
+                } catch (err) {
+                    console.warn("Skipping a record due to parsing error:", err);
+                }
+            });
+            return rows;
         }
-        const headers = ["FIR No", "Police Station", "Date", "Type", "Status"];
-        const worksheetData = [headers, ...data];
-        
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.aoa_to_sheet(worksheetData);
-        XLSX.utils.book_append_sheet(wb, ws, "FIR Report");
-        
-        XLSX.writeFile(wb, `FIR_Report_${new Date().getTime()}.xlsx`);
-    }
 
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/service-worker.js');
-        });
-    }
-</script>
+        // Export to PDF
+        function exportToPDF() {
+            const data = getReportData();
+            if (data.length === 0) {
+                alert("No data available to export.");
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(18);
+            doc.text("FIR System Report", 14, 20);
+            doc.setFontSize(10);
+            doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
+
+            const headers = [["FIR No", "Police Station", "Date", "Type", "Reason for Pending", "Status"]];
+
+            doc.autoTable({
+                head: headers,
+                body: data,
+                startY: 35,
+                theme: 'grid',
+                headStyles: { fillColor: [30, 60, 114] }
+            });
+
+            doc.save(`FIR_Report_${new Date().getTime()}.pdf`);
+        }
+
+        // Export to Excel
+        function exportToExcel() {
+            const data = getReportData();
+            if (data.length === 0) {
+                alert("No data available to export.");
+                return;
+            }
+            const headers = ["FIR No", "Police Station", "Date", "Type", "Reason for Pending", "Status"];
+            const worksheetData = [headers, ...data];
+
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+            XLSX.utils.book_append_sheet(wb, ws, "FIR Report");
+
+            XLSX.writeFile(wb, `FIR_Report_${new Date().getTime()}.xlsx`);
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js');
+            });
+        }
+    </script>
 </body>
+
 </html>

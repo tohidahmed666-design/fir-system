@@ -152,8 +152,11 @@ app.post('/admin/add', isAuth, async (req, res) => {
         ps_name,
         fir_number,
         date,
-        crime_type
+        crime_type,
+        is_pocso_scst
     } = req.body;
+    
+    const pocso = is_pocso_scst === 'on';
 
     // VALIDATION
     if (
@@ -171,9 +174,9 @@ app.post('/admin/add', isAuth, async (req, res) => {
 
         await pool.query(
             `INSERT INTO fir_records
-            (police_station, fir_number, fir_date, crime_type, chargesheet_filed)
-            VALUES ($1, $2, $3, $4, false)`,
-            [ps_name, fir_number, date, crime_type]
+            (police_station, fir_number, fir_date, crime_type, chargesheet_filed, is_pocso_scst)
+            VALUES ($1, $2, $3, $4, false, $5)`,
+            [ps_name, fir_number, date, crime_type, pocso]
         );
 
         res.redirect('/admin');
@@ -191,7 +194,7 @@ app.post('/admin/add', isAuth, async (req, res) => {
 // ================= REPORT PAGE =================
 app.get('/admin/report', isAuth, async (req, res) => {
 
-    const { reportType, station } = req.query;
+    const { reportType, station, statusFilter } = req.query;
 
     try {
 
@@ -241,6 +244,27 @@ app.get('/admin/report', isAuth, async (req, res) => {
             }
         }
 
+        // ================= STATUS FILTER =================
+        if (statusFilter && statusFilter !== "") {
+            const today = new Date();
+            data = data.filter(fir => {
+                const firDate = new Date(fir.fir_date);
+                const diffDays = Math.floor((today - firDate) / (1000 * 60 * 60 * 24));
+                const limitDays = fir.is_pocso_scst ? 60 : (fir.crime_type === 'Heinous' ? 90 : 60);
+                const isOverdue = !fir.chargesheet_filed && diffDays > limitDays;
+                const isPending = !fir.chargesheet_filed && diffDays <= limitDays;
+
+                if (statusFilter === "Pending") {
+                    return isPending;
+                } else if (statusFilter === "Overdue") {
+                    return isOverdue;
+                } else if (statusFilter === "All Status") {
+                    return isPending || isOverdue;
+                }
+                return true;
+            });
+        }
+
         // Natural sort by FIR number descending
         data.sort((a, b) => {
             const aVal = a.fir_number || "";
@@ -253,6 +277,7 @@ app.get('/admin/report', isAuth, async (req, res) => {
             stations,
             reportType: reportType || "",
             station: station || "",
+            statusFilter: statusFilter || "",
             totalInDB,
             user: req.session.user
         });
@@ -291,6 +316,28 @@ app.post('/update-chargesheet/:id', isAuth, async (req, res) => {
 
 });
 
+
+// ================= UPDATE REASON =================
+app.post('/update-reason/:id', isAuth, async (req, res) => {
+    try {
+        let { reason_for_pending, reason_for_pending_others } = req.body;
+        if (reason_for_pending === 'Others') {
+            reason_for_pending = reason_for_pending_others;
+        }
+        // Max 25 chars
+        const safeReason = reason_for_pending ? reason_for_pending.substring(0, 25) : null;
+        
+        await pool.query(
+            `UPDATE fir_records SET reason_for_pending = $1 WHERE id = $2`,
+            [safeReason, req.params.id]
+        );
+
+        res.redirect('/admin/report');
+    } catch (err) {
+        console.log(err);
+        res.send(err.message);
+    }
+});
 
 // ================= LOGOUT =================
 app.get('/logout', (req, res) => {
