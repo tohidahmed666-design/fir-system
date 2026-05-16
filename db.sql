@@ -18,4 +18,4 @@ CREATE TABLE fir_records (
 
 -- ADMIN
 INSERT INTO users (username, password, role)
-VALUES ('DCRB DPO Gadag', 'default@123', 'admin');
+VALUES ('PS User', 'ksp@123ABC', 'subuser');

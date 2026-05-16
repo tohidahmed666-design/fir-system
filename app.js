@@ -28,22 +28,23 @@ app.use(session({
 }));
 
 // ================= STATIONS =================
+// Station names MUST exactly match what is stored in the DB (from data.csv)
 const stations = [
+    "Betageri Extention PS",
+    "Betageri PS",
+    "Gadag CEN Crime PS",
+    "Gadag Rural PS",
     "Gadag Town PS",
     "Gadag Traffic PS",
-    "Betageri PS",
-    "Betageri Extension PS",
-    "Gadag Rural PS",
     "Gadag Women PS",
-    "Gadag CEN PS",
-    "Mulagund PS",
-    "Ron PS",
-    "Naregal PS",
     "Gajendragad PS",
-    "Shirahatti PS",
     "Lakshmeshwar PS",
+    "Mulagund PS",
+    "Mundargi PS",
+    "Naregal PS",
     "Nargund PS",
-    "Mundargi PS"
+    "Ron PS",
+    "Shirahatti PS"
 ];
 
 // ================= LOGIN PAGE =================
@@ -52,7 +53,8 @@ app.get('/', (req, res) => {
     res.render('login', {
         error: null,
         users: [
-            { username: "DCRB DPO Gadag" }
+            { username: "DCRB DPO Gadag" },
+            { username: "PS User" }
         ]
     });
 
@@ -76,7 +78,8 @@ app.post('/login', async (req, res) => {
             return res.render('login', {
                 error: "Invalid credentials",
                 users: [
-                    { username: "DCRB DPO Gadag" }
+                    { username: "DCRB DPO Gadag" },
+                    { username: "PS User" }
                 ]
             });
 
@@ -84,21 +87,24 @@ app.post('/login', async (req, res) => {
 
         const user = result.rows[0];
 
-        // ADMIN ACCESS ONLY
-        if (user.username !== "DCRB DPO Gadag") {
-
+        // ROLE-BASED REDIRECTION
+        if (user.role === 'admin') {
+            // admin user
+            req.session.user = user;
+            return res.redirect('/admin');
+        } else if (user.role === 'subuser') {
+            // PS user
+            req.session.user = user;
+            return res.redirect('/admin/report');
+        } else {
             return res.render('login', {
                 error: "Access denied",
                 users: [
-                    { username: "DCRB DPO Gadag" }
+                    { username: "DCRB DPO Gadag" },
+                    { username: "PS User" }
                 ]
             });
-
         }
-
-        req.session.user = user;
-
-        res.redirect('/admin');
 
     } catch (err) {
 
@@ -123,6 +129,11 @@ function isAuth(req, res, next) {
 // ================= ADMIN PAGE =================
 app.get('/admin', isAuth, (req, res) => {
 
+    // ADMIN PAGE - only admin users can access this page
+    if (req.session.user.role !== "admin") {
+        // PS users are redirected to report page
+        return res.redirect('/admin/report');
+    }
     res.render('admin', {
         user: req.session.user,
         stations
@@ -133,6 +144,10 @@ app.get('/admin', isAuth, (req, res) => {
 // ================= ADD FIR =================
 app.post('/admin/add', isAuth, async (req, res) => {
 
+    // ADD FIR - only admin users can add FIRs
+    if (req.session.user.role !== "admin") {
+        return res.redirect('/admin/report');
+    }
     const {
         ps_name,
         fir_number,
@@ -180,73 +195,53 @@ app.get('/admin/report', isAuth, async (req, res) => {
 
     try {
 
-        // GET ALL FIR RECORDS
+        // GET ALL FIR RECORDS — no pre-filtering, show everything by default
         const result = await pool.query(`
             SELECT * FROM fir_records
             ORDER BY fir_date DESC
         `);
 
         let data = result.rows;
+        const totalInDB = data.length;
 
         // ================= STATION FILTER =================
         if (station && station !== "") {
-
-            data = data.filter(fir =>
-                fir.police_station === station
-            );
-
+            data = data.filter(fir => fir.police_station === station);
         }
 
-        // ================= REPORT FILTER =================
-        if (reportType && reportType !== "") {
+        // ================= REPORT TYPE FILTER =================
+        if (reportType && reportType !== "" && reportType !== "All") {
 
             const today = new Date();
 
-            data = data.filter(fir => {
+            if (reportType === "All-Heinous") {
+                // Show ALL Heinous regardless of age
+                data = data.filter(fir => fir.crime_type === "Heinous");
 
-                // HIDE CHARGESHEET FILED FIR
-                if (
-                    fir.chargesheet_filed === true ||
-                    fir.chargesheet_filed === 1
-                ) {
+            } else if (reportType === "All-Non-Heinous") {
+                // Show ALL Non-Heinous regardless of age
+                data = data.filter(fir => fir.crime_type === "Non-Heinous");
+
+            } else {
+                // Overdue filter — hide chargesheet filed, apply day threshold
+                data = data.filter(fir => {
+
+                    if (fir.chargesheet_filed === true || fir.chargesheet_filed === 1) return false;
+                    if (fir.crime_type !== reportType) return false;
+
+                    const firDate = new Date(fir.fir_date);
+                    const diffDays = Math.floor((today - firDate) / (1000 * 60 * 60 * 24));
+
+                    // Show all Heinous and Non-Heinous records regardless of age
+                    if (reportType === "Heinous" && diffDays >= 0) return true;
+                    if (reportType === "Non-Heinous" && diffDays >= 0) return true;
+
                     return false;
-                }
-
-                // CHECK CRIME TYPE
-                if (fir.crime_type !== reportType) {
-                    return false;
-                }
-
-                const firDate = new Date(fir.fir_date);
-
-                const diffDays = Math.floor(
-                    (today - firDate) /
-                    (1000 * 60 * 60 * 24)
-                );
-
-                // HEINOUS CASES
-                if (
-                    reportType === "Heinous" &&
-                    diffDays >= 80
-                ) {
-                    return true;
-                }
-
-                // NON-HEINOUS CASES
-                if (
-                    reportType === "Non-Heinous" &&
-                    diffDays >= 50
-                ) {
-                    return true;
-                }
-
-                return false;
-
-            });
-
+                });
+            }
         }
 
-        // Natural sort for FIR numbers (e.g., 20/2024 before 2/2024) in descending order
+        // Natural sort by FIR number descending
         data.sort((a, b) => {
             const aVal = a.fir_number || "";
             const bVal = b.fir_number || "";
@@ -257,15 +252,14 @@ app.get('/admin/report', isAuth, async (req, res) => {
             data,
             stations,
             reportType: reportType || "",
-            station: station || ""
+            station: station || "",
+            totalInDB,
+            user: req.session.user
         });
 
     } catch (err) {
-
         console.log(err);
-
         res.send(err.message);
-
     }
 
 });
@@ -274,6 +268,11 @@ app.get('/admin/report', isAuth, async (req, res) => {
 app.post('/update-chargesheet/:id', isAuth, async (req, res) => {
 
     try {
+
+        // Only admins can update chargesheet status
+        if (req.session.user.role !== "admin") {
+            return res.status(403).send("Unauthorized: Only Admins can update chargesheet status");
+        }
 
         await pool.query(
             `UPDATE fir_records SET chargesheet_filed = true WHERE id = $1`,

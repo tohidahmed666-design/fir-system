@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fir-system-cache-v1';
+const CACHE_NAME = 'fir-system-cache-v16';
 const urlsToCache = [
   '/',
   '/manifest.json'

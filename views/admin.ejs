@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,11 @@
     <meta name="theme-color" content="#1e3c72">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
         body {
             background: #f4f7f6;
             margin: 0;
@@ -25,139 +30,240 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 10;
         }
-        .header h2 { margin: 0; font-size: 20px; font-weight: 600; }
-        .top-actions { display: flex; gap: 12px; }
-        .btn {
-            padding: 10px 16px; font-size: 14px; font-weight: 500;
-            border-radius: 8px; text-decoration: none; color: white;
-            transition: all 0.3s ease; display: inline-block;
+
+        .header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
         }
-        .report-btn { background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); }
-        .report-btn:hover { background: rgba(255,255,255,0.3); }
-        .logout-btn { background: #e74c3c; }
-        .logout-btn:hover { background: #c0392b; }
+
+        .top-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .report-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .report-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
 
         /* CONTAINER */
         .container {
-            flex: 1; padding: 24px; display: flex;
-            justify-content: center; align-items: flex-start;
+            flex: 1;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
 
         /* CARD */
         .card {
-            background: white; padding: 30px;
-            border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-            width: 100%; max-width: 600px;
-            border: 1px solid rgba(0,0,0,0.05);
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
+
         .card h3 {
-            text-align: center; color: #1e3c72; font-size: 22px;
-            margin-top: 0; margin-bottom: 24px; font-weight: 600;
+            text-align: center;
+            color: #1e3c72;
+            font-size: 22px;
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-weight: 600;
         }
 
         /* FORM */
-        .form-group { margin-bottom: 20px; }
+        .form-group {
+            margin-bottom: 20px;
+        }
+
         .form-group label {
-            display: block; margin-bottom: 8px; color: #555;
-            font-size: 14px; font-weight: 500;
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
         }
-        input, select {
-            width: 100%; padding: 14px; font-size: 16px;
-            border: 1px solid #ddd; border-radius: 8px;
-            background: #fdfdfd; transition: all 0.3s ease;
+
+        input,
+        select {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fdfdfd;
+            transition: all 0.3s ease;
         }
-        input:focus, select:focus {
-            outline: none; border-color: #2a5298;
-            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1); background: white;
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+            background: white;
         }
+
         button[type="submit"] {
-            width: 100%; padding: 16px; font-size: 16px; font-weight: 600;
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white; border: none; border-radius: 8px; cursor: pointer;
-            transition: all 0.3s ease; margin-top: 10px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
         }
-        button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(30, 60, 114, 0.3); }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(30, 60, 114, 0.3);
+        }
 
         /* RESPONSIVE */
         @media (max-width: 480px) {
-            .header { flex-direction: column; align-items: stretch; gap: 16px; padding: 16px; }
-            .header h2 { text-align: center; }
-            .top-actions { justify-content: stretch; }
-            .btn { flex: 1; text-align: center; }
-            .container { padding: 16px; }
-            .card { padding: 20px; }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 16px;
+                padding: 16px;
+            }
+
+            .header h2 {
+                text-align: center;
+            }
+
+            .top-actions {
+                justify-content: stretch;
+            }
+
+            .btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            .container {
+                padding: 16px;
+            }
+
+            .card {
+                padding: 20px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div class="header">
-    <h2>🚓 FIR Dashboard</h2>
-    <div class="top-actions">
-        <a href="/admin/report" class="btn report-btn">📊 View Reports</a>
-        <a href="/logout" class="btn logout-btn">Logout</a>
+    <div class="header">
+        <h2>📄FIR 60/90 Days Tracking System Dashboard</h2>
+        <div class="top-actions">
+            <a href="/admin/report" class="btn report-btn">📊 View Reports</a>
+            <a href="/logout" class="btn logout-btn">Logout</a>
+        </div>
     </div>
-</div>
 
-<div class="container">
-    <div class="card">
-        <h3>Register New FIR</h3>
-        <form method="POST" action="/admin/add">
-            <div class="form-group">
-                <label>Police Station</label>
-                <select name="ps_name" required>
-                    <option value="">Select Station</option>
-                    <% stations.forEach(s => { %>
-                        <option value="<%= s %>"><%= s %></option>
-                    <% }) %>
-                </select>
+    <div class="container" style="display: flex; gap: 60px; align-items: center; justify-content: center; min-height: 80vh; padding: 20px;">
+        <!-- Left Side: Subdued Watermark Logo -->
+        <div class="logo-side" style="flex: 1; display: flex; justify-content: flex-end; max-width: 450px;">
+            <img src="/images/Police.png?v=15" style="width: 100%; max-width: 350px; height: auto; opacity: 0.4; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));" alt="Police Logo">
+        </div>
+
+        <!-- Right Side: Form Card -->
+        <div class="form-side" style="flex: 1; display: flex; justify-content: flex-start;">
+            <div class="card" style="margin: 0; width: 100%; max-width: 600px;">
+                <h3 style="color: #1e3c72; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 25px;">Register New FIR</h3>
+                <form method="POST" action="/admin/add">
+                    <div class="form-group">
+                        <label>Police Station</label>
+                        <select name="ps_name" required>
+                            <option value="">Select Station</option>
+                            <% stations.forEach(s=> { %>
+                                <option value="<%= s %>">
+                                    <%= s %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>FIR Number</label>
+                        <input type="text" name="fir_number" placeholder="Enter FIR No." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>FIR Date</label>
+                        <input type="date" name="date" id="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Year</label>
+                        <input type="text" name="year" id="year" placeholder="Auto-filled Year" readonly
+                            style="background: #f0f0f0;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Crime Type</label>
+                        <select name="crime_type" id="crimeType" required>
+                            <option value="">Select Category</option>
+                            <option value="Heinous">Heinous</option>
+                            <option value="Non-Heinous">Non-Heinous</option>
+                        </select>
+                    </div>
+
+                    <button type="submit">Submit FIR Record</button>
+                </form>
             </div>
-            
-            <div class="form-group">
-                <label>FIR Number</label>
-                <input type="text" name="fir_number" placeholder="Enter FIR No." required>
-            </div>
-            
-            <div class="form-group">
-                <label>FIR Date</label>
-                <input type="date" name="date" id="date" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Year</label>
-                <input type="text" name="year" id="year" placeholder="Auto-filled Year" readonly style="background: #f0f0f0;">
-            </div>
-            
-            <div class="form-group">
-                <label>Crime Type</label>
-                <select name="crime_type" id="crimeType" required>
-                    <option value="">Select Category</option>
-                    <option value="Heinous">Heinous</option>
-                    <option value="Non-Heinous">Non-Heinous</option>
-                </select>
-            </div>
-            
-            <button type="submit">Submit FIR Record</button>
-        </form>
+        </div>
     </div>
-</div>
 
-<script>
-document.getElementById('date').addEventListener('change', function () {
-    document.getElementById('year').value = this.value ? new Date(this.value).getFullYear() : "";
-});
+    <script>
+        document.getElementById('date').addEventListener('change', function () {
+            document.getElementById('year').value = this.value ? new Date(this.value).getFullYear() : "";
+        });
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js');
-  });
-}
-</script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js');
+            });
+        }
+    </script>
 
 </body>
+
 </html>

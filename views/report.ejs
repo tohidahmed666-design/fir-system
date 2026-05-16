@@ -28,6 +28,8 @@
         .btn:hover { background: rgba(255,255,255,0.3); }
         .btn-primary { background: #2a5298; }
         .btn-primary:hover { background: #1e3c72; }
+        .btn-danger { background: #e74c3c; }
+        .btn-danger:hover { background: #c0392b; }
 
         .container { padding: 24px; max-width: 1200px; margin: 0 auto; }
         
@@ -98,17 +100,39 @@
 
 <div class="header">
     <h2>🚓 Reports</h2>
-    <div style="display: flex; gap: 10px; position: relative;">
+    <div style="display: flex; gap: 10px; align-items: center; position: relative;">
         <button class="btn" onclick="toggleExportMenu(event)" style="background: rgba(255,255,255,0.3); cursor: pointer;">📥 Export ▾</button>
         <div id="exportMenu" style="display: none; position: absolute; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-radius: 8px; top: 100%; right: 0; z-index: 9999; overflow: hidden; margin-top: 8px; min-width: 160px; border: 1px solid #ddd;">
             <button onclick="exportToPDF()" style="display: block; width: 100%; text-align: left; padding: 12px 16px; color: #333; background: none; border: none; border-bottom: 1px solid #eee; font-size: 14px; font-weight: 500; cursor: pointer;">📄 PDF Document</button>
             <button onclick="exportToExcel()" style="display: block; width: 100%; text-align: left; padding: 12px 16px; color: #333; background: none; border: none; font-size: 14px; font-weight: 500; cursor: pointer;">Excel Sheet</button>
         </div>
+        <% if (user.role === 'admin') { %>
         <a href="/admin" class="btn">⬅ Dashboard</a>
+        <% } %>
+        <a href="/logout" class="btn btn-danger">Logout</a>
     </div>
 </div>
 
 <div class="container">
+
+    <!-- Stats Bar -->
+    <div style="display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+        <div style="background:white; border-radius:12px; padding:16px 24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); flex:1; min-width:160px; border-left:4px solid #1e3c72;">
+            <div style="font-size:12px; color:#777; font-weight:500; margin-bottom:4px;">TOTAL IN DATABASE</div>
+            <div style="font-size:28px; font-weight:700; color:#1e3c72;"><%= totalInDB %></div>
+        </div>
+        <div style="background:white; border-radius:12px; padding:16px 24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); flex:1; min-width:160px; border-left:4px solid #2ecc71;">
+            <div style="font-size:12px; color:#777; font-weight:500; margin-bottom:4px;">SHOWING NOW</div>
+            <div style="font-size:28px; font-weight:700; color:#2ecc71;"><%= data.length %></div>
+        </div>
+        <% if (reportType && reportType !== '') { %>
+        <div style="background:white; border-radius:12px; padding:16px 24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); flex:1; min-width:200px; border-left:4px solid #f39c12;">
+            <div style="font-size:12px; color:#777; font-weight:500; margin-bottom:4px;">ACTIVE FILTER</div>
+            <div style="font-size:16px; font-weight:700; color:#f39c12;">⚠ Overdue <%= reportType %> only</div>
+        </div>
+        <% } %>
+    </div>
+
     <div class="filter-card">
         <form method="GET" action="/admin/report" style="display:flex; width:100%; gap:15px; flex-wrap:wrap; align-items:flex-end;">
             <div class="filter-group">
@@ -123,63 +147,89 @@
                 </select>
             </div>
             <div class="filter-group">
-                <label>Crime Type</label>
+                <label>Report Type</label>
                 <select name="reportType">
-                    <option value="">All Cases</option>
-                    <option value="Heinous" <%= reportType === 'Heinous' ? 'selected' : '' %>>Heinous</option>
-                    <option value="Non-Heinous" <%= reportType === 'Non-Heinous' ? 'selected' : '' %>>Non-Heinous</option>
+                    <option value="">All Records (no filter)</option>
+                    <option value="Heinous" <%= reportType === 'Heinous' ? 'selected' : '' %>>⚠ Overdue Heinous (80+ days)</option>
+                    <option value="Non-Heinous" <%= reportType === 'Non-Heinous' ? 'selected' : '' %>>⚠ Overdue Non-Heinous (50+ days)</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Filter</button>
+            <button type="submit" class="btn btn-primary">Apply</button>
+            <a href="/admin/report" class="btn" style="background:#6c757d;">Reset</a>
         </form>
     </div>
 
-    <div class="records-grid">
+    <!-- TABLE VIEW -->
+    <div style="background:white; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05); overflow:hidden;">
         <% if (data && data.length > 0) { %>
-            <% data.forEach(fir => { 
+        <div style="overflow-x:auto;">
+        <table id="firTable" style="width:100%; border-collapse:collapse; font-size:14px;">
+            <thead>
+                <tr style="background:linear-gradient(135deg,#1e3c72,#2a5298); color:white;">
+                    <th style="padding:14px 16px; text-align:left; font-weight:600;">#</th>
+                    <th style="padding:14px 16px; text-align:left; font-weight:600;">FIR No</th>
+                    <th style="padding:14px 16px; text-align:left; font-weight:600;">Police Station</th>
+                    <th style="padding:14px 16px; text-align:left; font-weight:600;">Date</th>
+                    <th style="padding:14px 16px; text-align:left; font-weight:600;">Type</th>
+                    <th style="padding:14px 16px; text-align:left; font-weight:600;">Days</th>
+                    <th style="padding:14px 16px; text-align:center; font-weight:600;">Status</th>
+                    <% if (user.role === 'admin') { %>
+                    <th style="padding:14px 16px; text-align:center; font-weight:600;">Filed</th>
+                    <% } %>
+                </tr>
+            </thead>
+            <tbody>
+            <% let rowNum = 0; data.forEach(fir => {
+                rowNum++;
                 const today = new Date();
                 const firDate = new Date(fir.fir_date);
-                const diffTime = today.getTime() - firDate.getTime();
-                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                const limitDays = fir.crime_type === "Heinous" ? 90 : 60;
-                const isHeinous = fir.crime_type === "Heinous";
+                const diffDays = Math.floor((today - firDate) / (1000 * 60 * 60 * 24));
+                const limitDays = fir.crime_type === 'Heinous' ? 90 : 60;
+                const isHeinous = fir.crime_type === 'Heinous';
+                const isOverdue = !fir.chargesheet_filed && diffDays > limitDays;
+                const rowBg = rowNum % 2 === 0 ? '#f8f9fa' : 'white';
             %>
-            <div class="record-card <%= isHeinous ? 'heinous' : 'non-heinous' %>">
-                <div class="record-header">
-                    <div class="fir-no">#<%= fir.fir_number %></div>
-                    <div class="badge <%= isHeinous ? 'heinous' : 'non-heinous' %>"><%= fir.crime_type %></div>
-                </div>
-                
-                <div class="record-detail">
-                    <span class="detail-label">Station</span>
-                    <span class="detail-value"><%= fir.police_station %></span>
-                </div>
-                <div class="record-detail">
-                    <span class="detail-label">Date</span>
-                    <span class="detail-value"><%= firDate.toLocaleDateString() %></span>
-                </div>
-                
-                <div class="status-container">
-                    <div class="status-info">
-                        <% if (fir.chargesheet_filed === true || fir.chargesheet_filed === 1) { %>
-                            <span class="status-text status-filed">✓ Chargesheet Filed</span>
-                        <% } else if(diffDays > limitDays) { %>
-                            <span class="status-text status-expired">⚠ Overdue (<%= diffDays %>d / <%= limitDays %>d)</span>
+                <tr style="background:<%= rowBg %>; border-bottom:1px solid #eee; transition:background 0.2s;"
+                    onmouseover="this.style.background='#eef2ff'" onmouseout="this.style.background='<%= rowBg %>'">
+                    <td style="padding:12px 16px; color:#999;"><%= rowNum %></td>
+                    <td style="padding:12px 16px; font-weight:700; color:#1e3c72;"><%= fir.fir_number %></td>
+                    <td style="padding:12px 16px; color:#333;"><%= fir.police_station %></td>
+                    <td style="padding:12px 16px; color:#555;"><%= firDate.toLocaleDateString('en-IN') %></td>
+                    <td style="padding:12px 16px;">
+                        <span style="padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;
+                            background:<%= isHeinous ? '#fdeaea' : '#fef5e6' %>;
+                            color:<%= isHeinous ? '#e74c3c' : '#d68910' %>;">
+                            <%= fir.crime_type %>
+                        </span>
+                    </td>
+                    <td style="padding:12px 16px; font-weight:600;
+                        color:<%= fir.chargesheet_filed ? '#3498db' : (isOverdue ? '#e74c3c' : '#2ecc71') %>">
+                        <%= diffDays %>d / <%= limitDays %>d
+                    </td>
+                    <td style="padding:12px 16px; text-align:center;">
+                        <% if (fir.chargesheet_filed) { %>
+                            <span style="background:#d5f5e3; color:#1e8449; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;">✓ Filed</span>
+                        <% } else if (isOverdue) { %>
+                            <span style="background:#fdeaea; color:#e74c3c; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;">⚠ Overdue</span>
                         <% } else { %>
-                            <span class="status-text status-valid">⏱ <%= diffDays %>d / <%= limitDays %>d</span>
+                            <span style="background:#eaf4fb; color:#2980b9; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;">⏱ Pending</span>
                         <% } %>
-                    </div>
-                    
-                    <form method="POST" action="/update-chargesheet/<%= fir.id %>" class="toggle-form">
-                        <span class="toggle-label">Filed</span>
-                        <label class="switch">
-                            <input type="checkbox" name="chargesheet" onchange="this.form.submit()" <%= fir.chargesheet_filed ? 'checked' : '' %>>
-                            <span class="slider"></span>
-                        </label>
-                    </form>
-                </div>
-            </div>
+                    </td>
+                    <% if (user.role === 'admin') { %>
+                    <td style="padding:12px 16px; text-align:center;">
+                        <form method="POST" action="/update-chargesheet/<%= fir.id %>" style="margin:0;">
+                            <label class="switch">
+                                <input type="checkbox" name="chargesheet" onchange="this.form.submit()" <%= fir.chargesheet_filed ? 'checked' : '' %>>
+                                <span class="slider"></span>
+                            </label>
+                        </form>
+                    </td>
+                    <% } %>
+                </tr>
             <% }) %>
+            </tbody>
+        </table>
+        </div>
         <% } else { %>
             <div class="no-data">No FIR records found matching your filters.</div>
         <% } %>
@@ -209,26 +259,23 @@
 
     // Helper to get current table data
     function getReportData() {
-        const cards = document.querySelectorAll('.record-card');
         const rows = [];
-        cards.forEach(card => {
+        const trs = document.querySelectorAll('#firTable tbody tr');
+        trs.forEach(tr => {
             try {
-                const firNoEl = card.querySelector('.fir-no');
-                const details = card.querySelectorAll('.record-detail .detail-value');
-                const badgeEl = card.querySelector('.badge');
-                const statusEl = card.querySelector('.status-text');
+                const tds = tr.querySelectorAll('td');
+                if (tds.length >= 7) {
+                    const firNo = tds[1].innerText.replace('#', '').trim();
+                    const station = tds[2].innerText.trim();
+                    const date = tds[3].innerText.trim();
+                    const type = tds[4].innerText.trim();
+                    let status = tds[6].innerText.trim();
+                    
+                    // Remove symbols (✓, ⚠, ⏱) for better PDF/Excel export compatibility
+                    status = status.replace(/[✓⚠⏱]/g, '').trim();
 
-                // Safety checks to prevent "innerText of null" errors
-                const firNo = firNoEl ? firNoEl.innerText.replace('#', '').trim() : 'N/A';
-                const station = (details && details[0]) ? details[0].innerText.trim() : 'N/A';
-                const date = (details && details[1]) ? details[1].innerText.trim() : 'N/A';
-                const type = badgeEl ? badgeEl.innerText.trim() : 'N/A';
-                let status = statusEl ? statusEl.innerText.trim() : 'N/A';
-                
-                // Remove symbols (✓, ⚠, ⏱) for better PDF/Excel export compatibility
-                status = status.replace(/[✓⚠⏱]/g, '').trim();
-
-                rows.push([firNo, station, date, type, status]);
+                    rows.push([firNo, station, date, type, status]);
+                }
             } catch (err) {
                 console.warn("Skipping a record due to parsing error:", err);
             }
