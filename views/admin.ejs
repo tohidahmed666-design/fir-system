@@ -243,11 +243,26 @@
 
                     <div class="form-group">
                         <label>Crime Type</label>
-                        <select name="crime_type" id="crimeType" required>
-                            <option value="">Select Category</option>
-                            <option value="Heinous">Heinous</option>
-                            <option value="Non-Heinous">Non-Heinous</option>
-                        </select>
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <label style="display: flex; align-items: center; gap: 5px; font-weight: normal; margin: 0; color: #333;">
+                                <input type="radio" name="crime_type" value="Heinous" required style="width: auto; margin: 0;"> Heinous
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px; font-weight: normal; margin: 0; color: #333;">
+                                <input type="radio" name="crime_type" value="Non-Heinous" required style="width: auto; margin: 0;"> Non-Heinous
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Duration</label>
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <label style="display: flex; align-items: center; gap: 5px; font-weight: normal; margin: 0; color: #333;">
+                                <input type="radio" name="is_pocso_scst" value="on" required style="width: auto; margin: 0;"> 60 Days
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px; font-weight: normal; margin: 0; color: #333;">
+                                <input type="radio" name="is_pocso_scst" value="off" required style="width: auto; margin: 0;"> 90 Days
+                            </label>
+                        </div>
                     </div>
 
                     <button type="submit">Submit FIR Record</button>
