@@ -392,7 +392,7 @@
                         <option value="All Status" <%= (typeof statusFilter !== 'undefined' && statusFilter === 'All Status') ? 'selected' : '' %>>All Status (Pending & Overdue)</option>
                         <option value="Pending" <%= (typeof statusFilter !== 'undefined' && statusFilter === 'Pending') ? 'selected' : '' %>>Pending</option>
                         <option value="Overdue" <%= (typeof statusFilter !== 'undefined' && statusFilter === 'Overdue') ? 'selected' : '' %>>Overdue</option>
-                        <option value="" <%= (typeof statusFilter === 'undefined' || statusFilter === '') ? 'selected' : '' %>>Include Filed</option>
+                        <option value="" <%= (typeof statusFilter === 'undefined' || statusFilter === '') ? 'selected' : '' %>>Include Charge Sheeted</option>
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Apply</button>
@@ -482,7 +482,7 @@
                                         <% if (fir.chargesheet_filed) { %>
                                             <span
                                                 style="background:#d5f5e3; color:#1e8449; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;">✓
-                                                Filed</span>
+                                                Charge Sheeted</span>
                                             <% } else if (isOverdue) { %>
                                                 <span
                                                     style="background:#fdeaea; color:#e74c3c; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;">⚠
@@ -578,7 +578,7 @@
                         // Remove symbols (✓, ⚠, ⏱) for better PDF/Excel export compatibility
                         status = status.replace(/[✓⚠⏱]/g, '').trim();
                         
-                        const chargeSheeted = status === 'Filed' ? 'Yes' : 'No';
+                        const chargeSheeted = status === 'Charge Sheeted' ? 'Yes' : 'No';
 
                         rows.push([firNo, station, date, type, days, reason, status, chargeSheeted]);
                     }
