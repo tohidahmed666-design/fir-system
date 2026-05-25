@@ -557,25 +557,30 @@
             trs.forEach(tr => {
                 try {
                     const tds = tr.querySelectorAll('td');
-                    if (tds.length >= 7) {
+                    if (tds.length >= 8) {
                         const firNo = tds[1].innerText.replace('#', '').trim();
                         const station = tds[2].innerText.trim();
                         const date = tds[3].innerText.trim();
                         const type = tds[4].innerText.trim();
+                        const days = tds[5].innerText.trim();
                         
                         let reason = '';
                         const reasonSelect = tds[6].querySelector('select');
                         const reasonInput = tds[6].querySelector('input[type="text"]');
                         if (reasonSelect) {
                             reason = reasonSelect.value === 'Others' ? (reasonInput ? reasonInput.value : '') : reasonSelect.value;
+                        } else {
+                            reason = tds[6].innerText.trim();
                         }
 
                         let status = tds[7].innerText.trim();
 
                         // Remove symbols (✓, ⚠, ⏱) for better PDF/Excel export compatibility
                         status = status.replace(/[✓⚠⏱]/g, '').trim();
+                        
+                        const chargeSheeted = status === 'Filed' ? 'Yes' : 'No';
 
-                        rows.push([firNo, station, date, type, reason, status]);
+                        rows.push([firNo, station, date, type, days, reason, status, chargeSheeted]);
                     }
                 } catch (err) {
                     console.warn("Skipping a record due to parsing error:", err);
@@ -600,7 +605,7 @@
             doc.setFontSize(10);
             doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
 
-            const headers = [["FIR No", "Police Station", "Date", "Type", "Reason for Pending", "Status"]];
+            const headers = [["FIR No", "Police Station", "Date", "Type", "Days", "Reason for Pending", "Status", "Charge Sheeted"]];
 
             doc.autoTable({
                 head: headers,
@@ -620,7 +625,7 @@
                 alert("No data available to export.");
                 return;
             }
-            const headers = ["FIR No", "Police Station", "Date", "Type", "Reason for Pending", "Status"];
+            const headers = ["FIR No", "Police Station", "Date", "Type", "Days", "Reason for Pending", "Status", "Charge Sheeted"];
             const worksheetData = [headers, ...data];
 
             const wb = XLSX.utils.book_new();
