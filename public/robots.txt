@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fir-system-pafo.onrender.com/sitemap.xml
